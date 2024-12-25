@@ -9,5 +9,8 @@ data class Flight(
     @BsonProperty("destination") val destination:String,
     @BsonProperty("departureTime") val departureTime:String,
     @BsonProperty("arrivalTime") val arrivalTime:String,
-    @BsonProperty("passengers") val passengers:List<Int>
+    @BsonProperty("passengers") val passengers:List<Int>,
+    @BsonProperty("ticketPrice") val ticketPrice:Double,
+    @BsonProperty("flightDate") val flightDate:String,
+    @BsonProperty("airlineId") val airlineId : Int
 )

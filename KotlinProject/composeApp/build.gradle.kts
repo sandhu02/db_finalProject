@@ -28,6 +28,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
 
+            implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
             implementation("com.squareup.retrofit2:retrofit:2.9.0")
             implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson for JSON parsing
             implementation("com.squareup.okhttp3:okhttp:4.10.0") // OkHttp (Retrofit dependency)

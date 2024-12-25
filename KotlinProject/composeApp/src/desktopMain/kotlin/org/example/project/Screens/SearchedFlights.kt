@@ -2,57 +2,24 @@ package org.example.project.Screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.data.Flight
-import org.example.project.data.ObjectId
 import org.example.project.retrofit.FetchFlight
 
-var tempflightId = 0
-var tempairlineId:Int = 0
-
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun flightCard(currentScreen: MutableState<String>, flight: Flight) {
-    Card(
-        backgroundColor = cardColor ,
-        contentColor = Color.White,
-        elevation = 4.dp ,
-        modifier = Modifier.padding(12.dp).width(500.dp),
-        onClick = {
-            tempflightId = flight.flightId
-            println("***** airlineid in flightscreen : ${flight.airlineId} ********")
-            tempairlineId = flight.airlineId
-            currentScreen.value = "bookTicketScreen"
-        }
-    ) {
-        Column (verticalArrangement = Arrangement.SpaceEvenly , modifier = Modifier.padding(16.dp)) {
-            Text(text = "${flight.origin} - ${flight.destination}" , style = MaterialTheme.typography.h4 )
-            Row (horizontalArrangement = Arrangement.SpaceBetween ) {
-                Text(text = "${flight.departureTime} - ${flight.arrivalTime}" , style = MaterialTheme.typography.body1 )
-                Spacer(modifier = Modifier.width(32.dp))
-                Text(text = flight.flightDate, style = MaterialTheme.typography.body1 )
-            }
-        }
-    }
-}
-
-@Composable
-fun flightScreen(currentScreen: MutableState<String> ) {
-    val buttonColor = ButtonDefaults.buttonColors(
-        backgroundColor = Color(0xFF00684a), // Custom background color
-        contentColor = Color.White // Custom text color
-    )
-
+fun searchedFlightsScreen(currentScreen: MutableState<String> , origin:String , destination:String ) {
     val flightsCall = remember { FetchFlight() }
     val flightsList: List<Flight>? = flightsCall.flightslist
     LaunchedEffect(Unit) {
-        flightsCall.fetchFlightsList()
+        flightsCall.fetchflightsfilterbyCity(origin, destination)
     }
 
     Surface(modifier = Modifier.fillMaxSize(), color = bgColor) {

@@ -6,5 +6,8 @@ data class Flight(
     val destination:String,
     val departureTime:String,
     val arrivalTime:String,
-    val passengers:List<Int>
+    val passengers:List<Int>,
+    val ticketPrice : Double,
+    val flightDate : String,
+    val airlineId : Int
 )

@@ -11,6 +11,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import org.example.project.data.Flight
+import org.example.project.destinationCitytemp
+import org.example.project.originCitytemp
+import org.example.project.retrofit.FetchFlight
 
 @Composable
 fun homeScreen(currentScreen: MutableState<String>) {
@@ -25,6 +29,9 @@ fun homeScreen(currentScreen: MutableState<String>) {
         contentColor = Color.White // Custom text color
     )
 
+    var departureCity by remember { mutableStateOf(TextFieldValue("")) }
+    var destinationCity by remember { mutableStateOf(TextFieldValue("")) }
+
     Surface (modifier = Modifier.fillMaxSize() , color = bgColor) {
         Column (horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
             Text(
@@ -35,8 +42,6 @@ fun homeScreen(currentScreen: MutableState<String>) {
             )
 
             Row {
-                var departureCity by remember { mutableStateOf(TextFieldValue("")) }
-                var arrivalCity by remember { mutableStateOf(TextFieldValue("")) }
 
                 OutlinedTextField(
                     value = departureCity,
@@ -46,22 +51,36 @@ fun homeScreen(currentScreen: MutableState<String>) {
                     colors = textfieldColor
                 )
                 OutlinedTextField(
-                    value = arrivalCity,
-                    onValueChange = {arrivalCity = it},
+                    value = destinationCity,
+                    onValueChange = {destinationCity = it},
                     label = { Text("Destination City" , color = textColor) },
                     modifier = Modifier.padding(16.dp),
                     colors = textfieldColor
                 )
             }
 
-            Button(
-                onClick = {
-                    currentScreen .value = "flightScreen"
-                },
-                colors = buttonColor ,
-                modifier = Modifier.padding(12.dp)
-            ) {
-                Text(" Search " , style = MaterialTheme.typography.button)
+            Row () {
+                Button(
+                    onClick = {
+                        currentScreen .value = "flightScreen"
+                    },
+                    colors = buttonColor ,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text("See all Flights" , style = MaterialTheme.typography.button)
+                }
+
+                Button(
+                    onClick = {
+                        originCitytemp = departureCity.text
+                        destinationCitytemp = destinationCity.text
+                        currentScreen .value = "searchedFlightsScreen"
+                    },
+                    colors = buttonColor ,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(" Search " , style = MaterialTheme.typography.button)
+                }
             }
             Text(
                 text = "Logout" ,

@@ -12,9 +12,26 @@ class FetchFlight : RetrofitCall () {
     var flightslist by mutableStateOf<List<Flight>?>(null)
     var oneflight by mutableStateOf<Flight?>(null)
 
-
     fun fetchFlightsList() {
         val getflights = apiRequest.getFlights()
+        getflights.enqueue(object : Callback<List<Flight>> {
+            override fun onResponse(call: Call<List<Flight>>, response: retrofit2.Response<List<Flight>>) {
+                if (response.isSuccessful) {
+                    flightslist = response.body()
+                }
+                else {
+                    flightslist = null
+                }
+            }
+
+            override fun onFailure(call: Call<List<Flight>>, t: Throwable) {
+                flightslist = null
+            }
+        })
+    }
+
+    fun fetchflightsfilterbyCity(origin:String, destination:String) {
+        val getflights = apiRequest.getFlightsbyCities(origin, destination)
         getflights.enqueue(object : Callback<List<Flight>> {
             override fun onResponse(call: Call<List<Flight>>, response: retrofit2.Response<List<Flight>>) {
                 if (response.isSuccessful) {

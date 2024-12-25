@@ -1,21 +1,26 @@
 package org.example.project.Screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import org.example.project.data.User
+import org.example.project.retrofit.FetchUser
 
+var currentUser : User = User("awais" , "aw12" , "awais")
+
+fun authenticateUser(password : String, user: User?) : Boolean {
+    if (user!=null && password == user.password ) {
+        return true
+    }
+    return false
+}
 
 @Composable
-fun loginScreen(currentScreen: MutableState<String>) {
+fun loginScreen(currentScreen: MutableState<String> ) {
     val textfieldColor : TextFieldColors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Transparent, // No background color
         focusedIndicatorColor = Color.Blue, // Color of the underline when focused
@@ -27,8 +32,34 @@ fun loginScreen(currentScreen: MutableState<String>) {
         contentColor = Color.White // Custom text color
     )
 
-    Surface (modifier = Modifier.fillMaxSize() , color = bgColor) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errorText by remember { mutableStateOf("") }
 
+    var callfunction = remember { mutableStateOf(false) }
+    var nextScreen = false
+
+    var userCall = remember { FetchUser() }
+    val fetchedUser = userCall.oneUser
+
+    if (callfunction.value) {
+        print("******** function called *******")
+        LaunchedEffect(Unit) {
+            userCall.fetchOneUser(username)
+            println("********* ${fetchedUser} , $password ********")
+
+            if (authenticateUser(password = password, user = fetchedUser)) {
+                println("***** authenticated **********")
+                nextScreen = true
+            }
+            else {
+                errorText = "Invalid Username or Password"
+            }
+            callfunction.value = false
+        }
+    }
+
+    Surface (modifier = Modifier.fillMaxSize() , color = bgColor) {
         Column (horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
             Text(
                 text = "Login to Book Ticket" ,
@@ -39,9 +70,6 @@ fun loginScreen(currentScreen: MutableState<String>) {
 
             Box {
                 Column {
-                    var username by remember { mutableStateOf("") }
-                    var password by remember { mutableStateOf("") }
-
                     TextField(
                         value = username,
                         onValueChange = { username = it },
@@ -56,6 +84,7 @@ fun loginScreen(currentScreen: MutableState<String>) {
                         modifier = Modifier.padding(16.dp),
                         colors = textfieldColor
                     )
+                    Text(text = errorText, modifier = Modifier.padding(8.dp) , color = Color.Red , style = MaterialTheme.typography.body2)
                 }
             }
             Row  {
@@ -69,10 +98,19 @@ fun loginScreen(currentScreen: MutableState<String>) {
                 Button(
                     onClick = {
                         currentScreen.value = "homeScreen"
+
+//                        callfunction.value = true
+//                        if (nextScreen) {
+//                            currentScreen.value = "homeScreen"
+//                        }
+//                        else {
+//                            println("*** user details don't match ***")
+//                        }
                     },
                     colors = buttonColor , modifier = Modifier.padding(12.dp)) {
                     Text(" Login " , style = MaterialTheme.typography.button)
                 }
+
             }
         }
     }

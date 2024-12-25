@@ -1,34 +1,23 @@
 package org.example.project
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import org.example.project.data.Airline
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import org.example.project.Screens.*
-import org.example.project.data.Flight
 
+lateinit var originCitytemp : String
+lateinit var destinationCitytemp : String
 
 @Composable
 fun App() {
     var currentScreen = remember { mutableStateOf("loginScreen") }
 
     when (currentScreen.value) {
-        "loginScreen" -> loginScreen(currentScreen)
+        "loginScreen" -> loginScreen(currentScreen )
         "registerScreen" -> registerScreen(currentScreen)
         "homeScreen" -> homeScreen(currentScreen)
+        "searchedFlightsScreen" -> searchedFlightsScreen(currentScreen ,origin =  originCitytemp , destination = destinationCitytemp)
         "flightScreen" -> flightScreen(currentScreen)
-        "bookTicketScreen" -> bookTicket(currentScreen,flightId = tempflightId)
+        "bookTicketScreen" -> bookTicket(currentScreen,flightId = tempflightId , airlineId = tempairlineId)
     }
-//    bookTicket(
-//        flight = Flight(
-//            flightId = 1, origin = "origin", destination = "destination", departureTime = "departureTime",
-//            arrivalTime = "arrival",
-//            passengers = listOf(1,2)
-//        )
-//    )
 }

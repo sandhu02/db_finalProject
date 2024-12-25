@@ -10,6 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.example.project.data.User
+import org.example.project.retrofit.FetchUser
 
 @Composable
 fun registerScreen(currentScreen: MutableState<String>) {
@@ -24,6 +26,24 @@ fun registerScreen(currentScreen: MutableState<String>) {
         contentColor = Color.White // Custom text color
     )
 
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var actualname by remember { mutableStateOf("") }
+
+    var registeredPopup = remember { mutableStateOf(false) }
+
+    var callFunction = remember { mutableStateOf(false) }
+
+    val userCall = remember { FetchUser() }
+    if (callFunction.value) {
+        val userObject = User(username = username, password = password , name = actualname)
+        LaunchedEffect(Unit) {
+            userCall.insertOneUser(userObject)
+            registeredPopup.value = true
+            callFunction.value = false
+        }
+    }
+
     Surface (modifier = Modifier.fillMaxSize() , color = bgColor) {
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Register" ,
@@ -34,10 +54,6 @@ fun registerScreen(currentScreen: MutableState<String>) {
 
             Box(){
                 Column {
-                    var username by remember { mutableStateOf("") }
-                    var password by remember { mutableStateOf("") }
-                    var actualname by remember { mutableStateOf("") }
-
                     TextField(
                         value = actualname,
                         onValueChange = { actualname = it },
@@ -64,7 +80,7 @@ fun registerScreen(currentScreen: MutableState<String>) {
 
             Button(
                 onClick = {
-
+                    callFunction.value = true
                 } ,
                 colors = buttonColor , modifier = Modifier.padding(12.dp)) {
                 Text("Register")
@@ -78,6 +94,10 @@ fun registerScreen(currentScreen: MutableState<String>) {
             }
 
         }
+    }
+
+    if (registeredPopup.value) {
+        popupBox(displayStatus = registeredPopup , "User has been registered")
     }
 }
 
